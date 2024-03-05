@@ -50,7 +50,10 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(move * speed * Time.deltaTime);
 
         bool isMoving = move.magnitude > 0.1f; // Adjust the threshold based on your game's specifics
-        animator.SetBool("IsMoving", isMoving);
+        // animator.SetBool("IsMoving", isMoving);
+        animator.SetBool("IsRunning", Input.GetKey(KeyCode.LeftShift));
+        Debug.Log("IsRunning in Script: " + animator.GetBool("IsRunning"));
+
         
         // Update Animator parameters
         animator.SetFloat("Horizontal", x);
