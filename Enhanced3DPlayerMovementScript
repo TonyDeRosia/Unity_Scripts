@@ -7,7 +7,10 @@ public class PlayerMovement : MonoBehaviour
     public CharacterController controller;
     public Animator animator; // Reference to the Animator component
 
-    public float speed = 12f;
+    // Movement Speeds
+    public float walkSpeed = 6f;
+    public float runSpeed = 12f;
+
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
 
@@ -79,15 +82,15 @@ public class PlayerMovement : MonoBehaviour
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+        bool isRunning = Input.GetKey(KeyCode.LeftShift);
+        float currentSpeed = isRunning ? runSpeed : walkSpeed; // Set speed based on running
+
         Vector3 move = transform.right * x + transform.forward * z;
-        controller.Move(move * speed * Time.deltaTime);
+        controller.Move(move * currentSpeed * Time.deltaTime);
 
         bool isMoving = move.magnitude > 0.1f; // Adjust the threshold based on your game's specifics
-        // animator.SetBool("IsMoving", isMoving);
-        animator.SetBool("IsRunning", Input.GetKey(KeyCode.LeftShift));
-        Debug.Log("IsRunning in Script: " + animator.GetBool("IsRunning"));
+        animator.SetBool("IsMoving", isMoving);
 
-        
         // Update Animator parameters
         animator.SetFloat("Horizontal", x);
         animator.SetFloat("Vertical", z);
@@ -129,13 +132,12 @@ public class PlayerMovement : MonoBehaviour
         if (canZoom && !isZoomLocked)
         {
             cameraDistance -= Input.GetAxis("Mouse ScrollWheel") * zoomSpeed;
-            cameraDistance = Mathf.Clamp(cameraDistance, minCameraDistance, maxCameraDistance);
-        }
-
-        Vector3 cameraPosition = cameraFollowTarget.position - cameraFollowTarget.forward * cameraDistance;
-        playerCamera.transform.position = cameraPosition;
-        playerCamera.transform.LookAt(cameraFollowTarget.position);
+        cameraDistance = Mathf.Clamp(cameraDistance, minCameraDistance, maxCameraDistance);
     }
 
+    Vector3 cameraPosition = cameraFollowTarget.position - cameraFollowTarget.forward * cameraDistance;
+    playerCamera.transform.position = cameraPosition;
+    playerCamera.transform.LookAt(cameraFollowTarget.position);
+}
 }
 
